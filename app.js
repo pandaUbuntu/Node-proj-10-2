@@ -2,6 +2,7 @@ import express from 'express';
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import router from './src/Routers/post.router.js';
+import authRouter from './src/Routers/auth.router.js';
 
 const app = express();
 
@@ -9,9 +10,10 @@ mongoose.connect(process.env.DB_URL)
 .then(() => console.log('Connected!'))
 .catch(()=> console.log('Failed'));
 
-app.use(express.json())
+app.use(express.json());
 
 app.use('/api', router);
+app.use('/api', authRouter);
 
 
 

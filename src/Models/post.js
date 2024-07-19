@@ -6,7 +6,7 @@ const { Schema } = mongoose;
 
 const PostSchema = new mongoose.Schema(
     {
-        id: {
+        _id: {
             type: String,
             default: uuid,
         },

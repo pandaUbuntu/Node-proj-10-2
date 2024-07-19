@@ -1,28 +1,58 @@
-//import Post from '../Models/post.js'
+import Post from '../Models/post.js'
+import { validationResult } from "express-validator";
 
-export const getPosts = ((req, res) => {
-    res.send("Ви отримали всі пости.");
-})
+class PostController{
+    async getPostsByUserId(req, res) {
+        try{
+            const posts = await Post.find({author: req.params.userId});
 
-export const getPost = ((req, res) => {
-    const id = Number(req.params.postId)
+            return res.status(200).json(posts);
+        }
+        catch(e){
+            return res.status(500).json({message: e.message})
+        }
+    }
     
-    res.send("Ви отримали пост з id " + id);
-})
+    async getPost (req, res){
+        const id = Number(req.params.postId);
+        
+        res.send("Ви отримали пост з id " + id);
+    }
+    
+    async getPosts (req, res){
+        const id = Number(req.params.postId)
+        
+        res.send("Ви отримали пост з id " + id);
+    }
 
-export const createPost = ((req, res) => {
-    //res.send("Ви створили новий пост");
-    res.status(211).json("newProduct")
-})
+    async createPost(req, res) {
+        try{
+            if(!validationResult(req).isEmpty()){
+                throw new Error('Помилка валідації даних!');
+            }
 
-export const updatePost = ((req, res) => {
-    const id = Number(req.params.id);
+            const authorId = req.params.authorId;
 
-    res.send("Ви змінили пост з ID " + id);
-    //res.status(200).json('Product updated')
-})
+            const newPost = await Post.create({title: req.body.title, text: req.body.text, author: authorId});
 
-export const deletePost = ((req, res) => {
-    const id = Number(req.params.id);
-    res.send("Ви видалили пост з ID " + id);
-})
+            return res.status(201).json(newPost);
+        }
+        catch(e){
+            return res.status(500).json({message: e.message})
+        }
+    }
+    
+    async updatePost(req, res)  {
+        const id = Number(req.params.id);
+    
+        res.send("Ви змінили пост з ID " + id);
+        //res.status(200).json('Product updated')
+    }
+    
+    async deletePost(req, res)  {
+        const id = Number(req.params.id);
+        res.send("Ви видалили пост з ID " + id);
+    }
+}
+
+export default new PostController();
